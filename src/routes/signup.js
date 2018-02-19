@@ -1,22 +1,8 @@
 import React from 'react';
-import {
-  AsyncStorage,
-  View,
-  TextInput,
-  Text,
-  StyleSheet,
-  Button
-} from 'react-native';
+import { AsyncStorage, View, Text, Button } from 'react-native';
+import TextField from '../components/TextField';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-
-const styles = StyleSheet.create({
-  field: {
-    borderBottomWidth: 1,
-    fontSize: 20,
-    marginBottom: 20
-  }
-});
 
 const defaultState = {
   values: {
@@ -27,28 +13,6 @@ const defaultState = {
   errors: {},
   isSubmitting: false
 };
-
-class TextField extends React.PureComponent {
-  onChangeText = text => {
-    const { onChangeText, name } = this.props;
-    onChangeText(name, text);
-  };
-
-  render() {
-    const { value, secureTextEntry, name } = this.props;
-
-    return (
-      <TextInput
-        onChangeText={this.onChangeText}
-        value={value}
-        style={styles.field}
-        placeholder={name}
-        autoCapitalize="none"
-        secureTextEntry={!!secureTextEntry}
-      />
-    );
-  }
-}
 
 class Signup extends React.Component {
   state = {
