@@ -1,7 +1,14 @@
-import React from 'react'
-import { View, TextInput, Text, StyleSheet, Button } from 'react-native'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
+import React from 'react';
+import {
+  AsyncStorage,
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  Button
+} from 'react-native';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 
 const styles = StyleSheet.create({
   field: {
@@ -9,7 +16,39 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20
   }
-})
+});
+
+const defaultState = {
+  values: {
+    name: '',
+    email: '',
+    password: ''
+  },
+  errors: {},
+  isSubmitting: false
+};
+
+class TextField extends React.PureComponent {
+  onChangeText = text => {
+    const { onChangeText, name } = this.props;
+    onChangeText(name, text);
+  };
+
+  render() {
+    const { value, secureTextEntry, name } = this.props;
+
+    return (
+      <TextInput
+        onChangeText={this.onChangeText}
+        value={value}
+        style={styles.field}
+        placeholder={name}
+        autoCapitalize="none"
+        secureTextEntry={!!secureTextEntry}
+      />
+    );
+  }
+}
 
 class Signup extends React.Component {
   state = {
@@ -20,22 +59,33 @@ class Signup extends React.Component {
     },
     errors: {},
     isSubmitting: false
-  }
+  };
 
   submit = async () => {
-    this.setState({ isSubmitting: true })
-    let response
+    if (this.state.isSubmitting) {
+      return;
+    }
+
+    this.setState({ isSubmitting: true });
+    let response;
     try {
       response = await this.props.mutate({
         variables: this.state.values
-      })
+      });
     } catch (err) {
-      console.log(err)
+      this.setState({
+        errors: {
+          email: 'Email is already taken'
+        },
+        isSubmitting: false
+      });
+      return;
     }
 
-    console.log(response)
-    this.setState({ isSubmitting: false })
-  }
+    await AsyncStorage.setItem('@ecommerce/token', response.data.signup.token);
+    this.setState(defaultState);
+    this.props.history.push('/products');
+  };
 
   onChangeText = (key, value) => {
     this.setState(state => ({
@@ -43,11 +93,15 @@ class Signup extends React.Component {
         ...state.values,
         [key]: value
       }
-    }))
-  }
+    }));
+  };
+
+  redirectToLogin = () => {
+    this.props.history.push('/login');
+  };
 
   render() {
-    const { values: { name, email, password } } = this.state
+    const { errors, values: { name, email, password } } = this.state;
 
     return (
       <View
@@ -59,29 +113,29 @@ class Signup extends React.Component {
         }}
       >
         <View style={{ width: 200 }}>
-          <TextInput
-            onChangeText={text => this.onChangeText('name', text)}
+          <TextField
             value={name}
-            style={styles.field}
-            placeholder="name"
+            name="name"
+            onChangeText={this.onChangeText}
           />
-          <TextInput
-            onChangeText={text => this.onChangeText('email', text)}
-            style={styles.field}
+          {errors.email && <Text>{errors.email}</Text>}
+          <TextField
             value={email}
-            placeholder="email"
+            name="email"
+            onChangeText={this.onChangeText}
           />
-          <TextInput
-            onChangeText={text => this.onChangeText('password', text)}
-            style={styles.field}
+          <TextField
             value={password}
-            placeholder="password"
+            name="password"
+            onChangeText={this.onChangeText}
             secureTextEntry
           />
           <Button title="Signup" onPress={this.submit} />
+          <Text>Already have an account?</Text>
+          <Button title="Login" onPress={this.redirectToLogin} />
         </View>
       </View>
-    )
+    );
   }
 }
 
@@ -91,6 +145,6 @@ const signupMutation = gql`
       token
     }
   }
-`
+`;
 
-export default graphql(signupMutation)(Signup)
+export default graphql(signupMutation)(Signup);
