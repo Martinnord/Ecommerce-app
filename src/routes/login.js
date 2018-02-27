@@ -3,6 +3,7 @@ import { AsyncStorage, View, Text, Button } from 'react-native';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import TextField from '../components/TextField';
+import { JWT_TOKEN } from '../constants';
 
 const defaultState = {
   values: {
@@ -42,18 +43,18 @@ class Login extends React.Component {
       variables: this.state.values,
     });
 
-    const { payload, error } = response.data.login;}
+    const { payload, error } = response.data.login;
 
     if (payload) {
-      await AsyncStorage.setItem('@ecommerce/token', payload.token);
+      await AsyncStorage.setItem(JWT_TOKEN, payload.token);
       this.setState(defaultState);
       this.props.history.push('/products');
     } else {
       this.setState({
         errors: {
-          [error.field]: error.message
+          [error.field]: error.message,
         },
-        isSubmitting: false
+        isSubmitting: false,
       });
     }
   };
@@ -71,7 +72,7 @@ class Login extends React.Component {
           flex: 1,
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <View style={{ width: 200 }}>
