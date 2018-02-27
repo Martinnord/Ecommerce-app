@@ -1,17 +1,17 @@
 import React from 'react';
 import { AsyncStorage, View, Text, Button } from 'react-native';
-import TextField from '../components/TextField';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import TextField from '../components/TextField';
 
 const defaultState = {
   values: {
     name: '',
     email: '',
-    password: ''
+    password: '',
   },
   errors: {},
-  isSubmitting: false
+  isSubmitting: false,
 };
 
 class Signup extends React.Component {
@@ -19,10 +19,19 @@ class Signup extends React.Component {
     values: {
       name: '',
       email: '',
-      password: ''
+      password: '',
     },
     errors: {},
-    isSubmitting: false
+    isSubmitting: false,
+  };
+
+  onChangeText = (key, value) => {
+    this.setState(state => ({
+      values: {
+        ...state.values,
+        [key]: value,
+      },
+    }));
   };
 
   submit = async () => {
@@ -39,9 +48,9 @@ class Signup extends React.Component {
     } catch (err) {
       this.setState({
         errors: {
-          email: 'Email is already taken'
+          email: 'Email is already taken',
         },
-        isSubmitting: false
+        isSubmitting: false,
       });
       return;
     }
@@ -49,15 +58,6 @@ class Signup extends React.Component {
     await AsyncStorage.setItem('@ecommerce/token', response.data.signup.token);
     this.setState(defaultState);
     this.props.history.push('/products');
-  };
-
-  onChangeText = (key, value) => {
-    this.setState(state => ({
-      values: {
-        ...state.values,
-        [key]: value
-      }
-    }));
   };
 
   redirectToLogin = () => {

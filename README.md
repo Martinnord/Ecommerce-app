@@ -12,6 +12,7 @@ Letting people to upload things they'd like to sell. Might implement chatting fe
 * Being able to update and delete a product
 * Take photo/ upload image to the product
 * Give seller it's own profile to be contacted
+* Design a super beautiful UI.
 
 ## Project planning
 

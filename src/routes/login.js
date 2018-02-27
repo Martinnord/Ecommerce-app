@@ -1,26 +1,35 @@
 import React from 'react';
 import { AsyncStorage, View, Text, Button } from 'react-native';
-import TextField from '../components/TextField';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import TextField from '../components/TextField';
 
 const defaultState = {
   values: {
     email: '',
-    password: ''
+    password: '',
   },
   errors: {},
-  isSubmitting: false
+  isSubmitting: false,
 };
 
 class Login extends React.Component {
   state = {
     values: {
       email: '',
-      password: ''
+      password: '',
     },
     errors: {},
-    isSubmitting: false
+    isSubmitting: false,
+  };
+
+  onChangeText = (key, value) => {
+    this.setState(state => ({
+      values: {
+        ...state.values,
+        [key]: value,
+      },
+    }));
   };
 
   submit = async () => {
@@ -30,14 +39,14 @@ class Login extends React.Component {
 
     this.setState({ isSubmitting: true });
     const response = await this.props.mutate({
-      variables: this.state.values
+      variables: this.state.values,
     });
 
-    const { payload, error } = response.data.login;
-    console.log('errrrrroooooorr', error);
+    const { payload, error } = response.data.login;}
 
     if (payload) {
       await AsyncStorage.setItem('@ecommerce/token', payload.token);
+      this.setState(defaultState);
       this.props.history.push('/products');
     } else {
       this.setState({
@@ -47,15 +56,6 @@ class Login extends React.Component {
         isSubmitting: false
       });
     }
-  };
-
-  onChangeText = (key, value) => {
-    this.setState(state => ({
-      values: {
-        ...state.values,
-        [key]: value
-      }
-    }));
   };
 
   redirectToSignup = () => {
