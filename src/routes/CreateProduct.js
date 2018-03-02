@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  AsyncStorage,
   View,
   Text,
   StyleSheet,
@@ -13,8 +12,8 @@ import {
 import { ImagePicker } from 'expo';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { ReactNativeFile } from 'apollo-upload-client';
 import TextField from '../components/TextField';
-import { JWT_TOKEN } from '../constants';
 
 const defaultState = {
   values: {
@@ -77,16 +76,7 @@ const styles = StyleSheet.create({
 });
 
 class CreateProduct extends React.Component {
-  state = {
-    values: {
-      name: '',
-      description: '',
-      price: '',
-      image: null,
-    },
-    errors: {},
-    isSubmitting: false,
-  };
+  state = defaultState;
 
   onChangeText = (key, value) => {
     this.setState(state => ({
@@ -104,24 +94,40 @@ class CreateProduct extends React.Component {
     }
 
     this.setState({ isSubmitting: true });
+    const { name, description, price, imageUrl } = this.state.values;
+    const image = new ReactNativeFile({
+      uri: imageUrl,
+      type: 'image/png',
+      name: 'i-am-a-name',
+    });
+    console.log('image', image)
     let response;
     try {
       response = await this.props.mutate({
-        variables: this.state.values,
+        variables: {
+          name,
+          description,
+          price,
+          image,
+        },
       });
     } catch (err) {
+      console.log('err happened');
+      console.log(err);
       // this.setState({
       //   errors: {
-      //     email: 'Email is already taken',
+      //     email: 'Already taken',
       //   },
       //   isSubmitting: false,
       // });
       // return;
     }
+    console.log('response', response);
 
-    // await AsyncStorage.setItem(JWT_TOKEN, response.data.signup.token);
-    this.setState(defaultState);
-    this.props.history.push('/products');
+    // await AsyncStorage.setItem(TOKEN_KEY, response.data.signup.token);
+    // this.setState(defaultState);
+    // this.props.history.push('/products');
+    this.setState({ isSubmitting: false });
   };
 
   // redirectToLogin = () => {
@@ -140,7 +146,8 @@ class CreateProduct extends React.Component {
   };
 
   render() {
-    const { errors, values: { name, description, price, imageUrl } } = this.state;
+    const { values: { name, description, imageUrl, price } } = this.state;
+
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -148,11 +155,7 @@ class CreateProduct extends React.Component {
           <View style={styles.authWrapper}>
             <Text style={styles.authHeader}>Create Product</Text>
             <View style={styles.lineStyle} />
-            <TextField
-              value={name}
-              name="name"
-              onChangeText={this.onChangeText}
-            />
+            <TextField value={name} name="name" onChangeText={this.onChangeText} />
             <TextField
               value={description}
               name="description"
@@ -163,15 +166,14 @@ class CreateProduct extends React.Component {
               name="price"
               onChangeText={this.onChangeText}
             />
-            <View
-            >
+            <View>
               <TouchableOpacity style={styles.buttonContainer}>
-                {imageUrl && (
+                {imageUrl ? (
                   <Image
                     source={{ uri: imageUrl }}
                     style={{ width: 200, height: 200 }}
                   />
-                )}
+                ) : (null) }
                 <Text style={styles.buttonText} onPress={this.pickImage}>
                   Select image
                 </Text>
@@ -189,12 +191,12 @@ class CreateProduct extends React.Component {
   }
 }
 
-const signupMutation = gql`
-  mutation($name: String!, $email: String!, $password: String!) {
-    signup(name: $name, email: $email, password: $password) {
-      token
+const createProductMutation = gql`
+  mutation ($name: String!, $description: String!, $price: Float!, $image: Upload!) {
+    createProduct(name: $name, description: $description, price: $price, image: $image) {
+      id
     }
   }
 `;
 
-export default graphql(signupMutation)(CreateProduct);
+export default graphql(createProductMutation)(CreateProduct);
