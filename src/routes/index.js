@@ -10,8 +10,8 @@ import CreateProduct from './CreateProduct';
 export default () => (
   <NativeRouter>
     <Switch>
-      <Route exact path="/checkToken" component={CheckToken} />
-      <Route exact path="/" component={Signup} />
+      <Route exact path="/" component={CheckToken} />
+      <Route exact path="/signup" component={Signup} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/products" component={Products} />
       <Route exact path="/create-product" component={CreateProduct} />
