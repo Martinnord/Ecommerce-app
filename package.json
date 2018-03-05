@@ -27,6 +27,7 @@
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.9",
     "apollo-client": "^2.2.5",
+    "apollo-link-context": "^1.0.7",
     "apollo-link-http": "^1.5.2",
     "apollo-upload-client": "^7.1.0-alpha.2",
     "expo": "^25.0.0",
