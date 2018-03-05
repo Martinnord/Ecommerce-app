@@ -6,8 +6,10 @@ import { createUploadLink } from 'apollo-upload-client';
 
 import Routes from './routes';
 
+const link = createUploadLink({ uri: 'http://localhost:4000' });
+
 const client = new ApolloClient({
-  link: createUploadLink({ uri: 'http://localhost:4000' }),
+  link,
   cache: new InMemoryCache(),
 });
 

@@ -94,13 +94,14 @@ class CreateProduct extends React.Component {
     }
 
     this.setState({ isSubmitting: true });
-    const { name, description, price, imageUrl } = this.state.values;
+    const {
+      name, description, price, imageUrl,
+    } = this.state.values;
     const image = new ReactNativeFile({
       uri: imageUrl,
       type: 'image/png',
       name: 'i-am-a-name',
     });
-    console.log('image', image)
     let response;
     try {
       response = await this.props.mutate({
@@ -112,8 +113,7 @@ class CreateProduct extends React.Component {
         },
       });
     } catch (err) {
-      console.log('err happened');
-      console.log(err);
+      console.log('ERROR:', err);
       // this.setState({
       //   errors: {
       //     email: 'Already taken',
@@ -122,7 +122,7 @@ class CreateProduct extends React.Component {
       // });
       // return;
     }
-    console.log('response', response);
+    console.log(response);
 
     // await AsyncStorage.setItem(TOKEN_KEY, response.data.signup.token);
     // this.setState(defaultState);
@@ -146,8 +146,11 @@ class CreateProduct extends React.Component {
   };
 
   render() {
-    const { values: { name, description, imageUrl, price } } = this.state;
-
+    const {
+      values: {
+        name, description, imageUrl, price,
+      },
+    } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -155,7 +158,11 @@ class CreateProduct extends React.Component {
           <View style={styles.authWrapper}>
             <Text style={styles.authHeader}>Create Product</Text>
             <View style={styles.lineStyle} />
-            <TextField value={name} name="name" onChangeText={this.onChangeText} />
+            <TextField
+              value={name}
+              name="name"
+              onChangeText={this.onChangeText}
+            />
             <TextField
               value={description}
               name="description"
@@ -173,7 +180,7 @@ class CreateProduct extends React.Component {
                     source={{ uri: imageUrl }}
                     style={{ width: 200, height: 200 }}
                   />
-                ) : (null) }
+                ) : null}
                 <Text style={styles.buttonText} onPress={this.pickImage}>
                   Select image
                 </Text>
@@ -192,8 +199,18 @@ class CreateProduct extends React.Component {
 }
 
 const createProductMutation = gql`
-  mutation ($name: String!, $description: String!, $price: Float!, $image: Upload!) {
-    createProduct(name: $name, description: $description, price: $price, image: $image) {
+  mutation(
+    $name: String!
+    $description: String!
+    $price: Float!
+    $image: Upload!
+  ) {
+    createProduct(
+      name: $name
+      description: $description
+      price: $price
+      image: $image
+    ) {
       id
     }
   }
