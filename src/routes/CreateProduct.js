@@ -14,6 +14,8 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { ReactNativeFile } from 'apollo-upload-client';
 import TextField from '../components/TextField';
+import { productsQuery } from './Products';
+
 
 const defaultState = {
   values: {
@@ -110,6 +112,14 @@ class CreateProduct extends React.Component {
           price,
           image,
         },
+        update: (store, { data: { createProduct } }) => {
+          // Read the data from our cache for this query.
+          const data = store.readQuery({ query: productsQuery });
+          // Add our comment from the mutation to the end.
+          data.products.push(createProduct);
+          // Write our data back to the cache.
+          store.writeQuery({ query: productsQuery, data });
+        },
       });
     } catch (err) {
       return;
@@ -196,7 +206,15 @@ const createProductMutation = gql`
       price: $price
       image: $image
     ) {
+      __typename
       id
+      name
+      description
+      price
+      imageUrl
+      seller {
+        name
+      }
     }
   }
 `;
