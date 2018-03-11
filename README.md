@@ -78,6 +78,8 @@ After the planning I started developing the app and API. I started of with the c
 
 Both the frontend and backend will be using ESlint. Which is basically used to find problematic patterns or code that doesn't follow a certain style guidelines.
 
+My IDE of choice is Visual Studio Code
+
 #### Frontend (The actual app)
 
 I'm using React Native (RN) to create the app since it's crossplatform which means it will run both on iOS and Android.
