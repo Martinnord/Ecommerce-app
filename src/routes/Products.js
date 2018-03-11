@@ -14,7 +14,7 @@ import gql from 'graphql-tag';
 
 class Products extends React.Component {
   state = {
-    userId: null
+    userId: null,
   }
 
   componentDidMount = async () => {
