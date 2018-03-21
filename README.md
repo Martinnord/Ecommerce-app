@@ -107,7 +107,7 @@ From the `Product` route a user can navigate to the seller (another user) and se
 * Maybe other things (we'll see!)
 
 Below is an image of my IA
-!\[Information Architecture\](https://i.imgur.com/ll2LClT.jpg)
+![Information Architecture\](https://i.imgur.com/ll2LClT.jpg)
 
 
 ## Code structure
@@ -138,6 +138,4 @@ The routes will be able to import components from `/components` and use their fu
 
 The photo(s) below is the current design of the app. All of the UI is built from scratch using Sketch.
 
-  
-
-!\[Current Design\](https://i.imgur.com/LhUkD28.png)
+![Current Design\](https://i.imgur.com/LhUkD28.png)
