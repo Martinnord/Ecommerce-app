@@ -10,9 +10,12 @@ import {
   AsyncStorage,
 } from 'react-native';
 import { Font } from 'expo';
+import { Link } from 'react-router-native';
 import { List, ListItem } from 'react-native-elements';
 import moment from 'moment';
 import { graphql } from 'react-apollo';
+import { JWT_TOKEN } from '../constants';
+import jwtDecode from 'jwt-decode';
 import gql from 'graphql-tag';
 
 class Products extends React.Component {
@@ -21,12 +24,14 @@ class Products extends React.Component {
   };
 
   componentDidMount = async () => {
+    const token = await AsyncStorage.getItem(JWT_TOKEN);
+    const userId = jwtDecode(token);
     this.setState({
-      userId: await AsyncStorage.getItem('userId'),
+      userId,
     });
-    Font.loadAsync({
-      'Lato-Regular': require('../assets/fonts/Lato-Regular.ttf'),
-    })
+    // Font.loadAsync({
+    //   'Lato-Regular': require('../assets/fonts/Lato-Regular.ttf'),
+    // })
   };
 
   render() {
@@ -42,12 +47,12 @@ class Products extends React.Component {
 
     const styles = StyleSheet.create({
       name: {
-        fontFamily: 'Lato-Regular',
+        //fontFamily: 'Lato-Regular',
         fontSize: 20,
         fontWeight: '700',
       },
       description: {
-        fontFamily: 'Lato-Regular',
+        //fontFamily: 'Lato-Regular',
         fontSize: 14,
         color: 'grey',
       },
@@ -57,7 +62,7 @@ class Products extends React.Component {
         flex: 1,
       },
       createdAt: {
-        fontFamily: 'Lato-Regular',
+        //fontFamily: 'Lato-Regular',
         color: 'grey',
       },
       row: {
@@ -79,7 +84,6 @@ class Products extends React.Component {
       test: {
         flexDirection: 'row',
         alignSelf: 'flex-end',
-
       },
     });
 
@@ -96,32 +100,38 @@ class Products extends React.Component {
             keyExtractor={item => item.id}
             data={productsWithKey}
             renderItem={({ item }) => (
-              <ListItem
-                style={{ height: 100 }}
-                subtitle={
-                  <View style={styles.row}>
-                    <Image
-                      style={styles.image}
-                      source={{
-                        uri: `http://localhost:4000/${item.imageUrl}`,
-                      }}
-                    />
-                    <View style={styles.right}>
-                      <Text style={styles.name}>{item.name}</Text>
-                      <Text style={styles.description}>{item.description}</Text>
-                      <View style={styles.test}>
-                        <Text style={styles.price}>{item.price} kr</Text>
-                        <Text style={styles.createdAt}>{moment(item.createdAt).format('dddd h:mm')}</Text>
-                      </View>
-                      {this.state.userId === item.seller.id ? (
-                        <View>
-                          <Button title="edit" onPress={() => 5} />
+              <Link to={`product/${item.id}`}>
+                <ListItem
+                  style={{ height: 100 }}
+                  subtitle={
+                    <View style={styles.row}>
+                      <Image
+                        style={styles.image}
+                        source={{
+                          uri: `http://localhost:4000/${item.imageUrl}`,
+                        }}
+                      />
+                      <View style={styles.right}>
+                        <Text style={styles.name}>{item.name}</Text>
+                        <Text style={styles.description}>
+                          {item.description}
+                        </Text>
+                        <View style={styles.test}>
+                          <Text style={styles.price}>{item.price} kr</Text>
+                          <Text style={styles.createdAt}>
+                            {moment(item.createdAt).format('dddd h:mm')}
+                          </Text>
                         </View>
-                      ) : null}
+                        {this.state.userId === item.seller.id ? (
+                          <View>
+                            <Button title="edit" onPress={() => 5} />
+                          </View>
+                        ) : null}
+                      </View>
                     </View>
-                  </View>
-                }
-              />
+                  }
+                />
+              </Link>
             )}
           />
         </List>
