@@ -212,6 +212,7 @@ const createProductMutation = gql`
       description
       price
       imageUrl
+      createdAt
       seller {
         name
       }

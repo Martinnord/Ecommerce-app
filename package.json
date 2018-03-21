@@ -35,9 +35,16 @@
     "expo": "^25.0.0",
     "graphql": "^0.13.1",
     "graphql-tag": "^2.8.0",
+    "moment": "^2.21.0",
     "react": "16.2.0",
     "react-apollo": "^2.0.4",
     "react-native": "0.52.0",
+    "react-native-elements": "^0.19.0",
     "react-router-native": "^4.2.0"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
   }
 }
