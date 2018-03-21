@@ -54,11 +54,10 @@ class Products extends React.Component {
       price: {
         color: 'green',
         fontSize: 14,
-        justifyContent: 'flex-start',
+        flex: 1,
       },
       createdAt: {
         fontFamily: 'Lato-Regular',
-        justifyContent: 'flex-end',
         color: 'grey',
       },
       row: {
@@ -71,16 +70,16 @@ class Products extends React.Component {
         marginRight: 30,
         flex: 1,
         display: 'flex',
-        alignItems: 'flex-start',
       },
       image: {
-        width: 100,
+        width: 130,
         height: 100,
         borderRadius: 3,
       },
       test: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        alignSelf: 'flex-end',
+
       },
     });
 
@@ -98,6 +97,7 @@ class Products extends React.Component {
             data={productsWithKey}
             renderItem={({ item }) => (
               <ListItem
+                style={{ height: 100 }}
                 subtitle={
                   <View style={styles.row}>
                     <Image
